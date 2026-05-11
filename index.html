@@ -1,67 +1,103 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mascotas Censo</title>
-  <link rel="stylesheet" href="style.css"/>
+
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <header class="header">
+
     <div class="logo-container">
-      <img src="logo.png" alt="Logo Mascotas Censo" class="logo">
+      <img src="./img/logo.png" alt="Logo Mascotas Censo" class="logo">
     </div>
 
     <nav class="navbar">
-      <a href="#">Inicio</a>
-      <a href="#">Mascotas</a>
-      <a href="#">Dueños</a>
-      <a href="#">Censos</a>
-      <a href="#">Mapa</a>
+      <a href="index.html">Inicio</a>
+      <a href="mascotas.html">Mascotas</a>
+      <a href="personas.html">Dueños</a>
+      <a href="censos.html">Censos</a>
     </nav>
+
   </header>
 
   <main class="main">
 
     <section class="hero">
+
       <div class="hero-text">
+
         <h1>Censo de Mascotas</h1>
+
         <p>
           Plataforma para registrar, visualizar y gestionar información
           de mascotas y sus propietarios.
         </p>
 
-        <button>Comenzar</button>
+        <div class="buttons">
+
+          <a href="mascotas.html">
+            <button>Registrar Mascota</button>
+          </a>
+
+          <a href="personas.html">
+            <button>Registrar Dueño</button>
+          </a>
+
+          <a href="censos.html">
+            <button>Nuevo Censo</button>
+          </a>
+
+        </div>
+
       </div>
 
       <div class="hero-image">
-        <img src="logo.png" alt="Mascotas Censo">
+        <img src="./img/logo.png" alt="Mascotas Censo">
       </div>
+
     </section>
 
     <section class="cards">
 
-      <div class="card">
-        <h2>Registro de Mascotas</h2>
-        <p>
-          Agrega información detallada de las mascotas censadas.
-        </p>
-      </div>
+      <a href="mascotas.html" class="card-link">
 
-      <div class="card">
-        <h2>Registro de Dueños</h2>
-        <p>
-          Administra los datos de los propietarios fácilmente.
-        </p>
-      </div>
+        <div class="card">
+          <h2>Registro de Mascotas</h2>
 
-      <div class="card">
-        <h2>Geolocalización</h2>
-        <p>
-          Visualiza en mapa cada mascota registrada.
-        </p>
-      </div>
+          <p>
+            Agrega información detallada de las mascotas censadas.
+          </p>
+        </div>
+
+      </a>
+
+      <a href="personas.html" class="card-link">
+
+        <div class="card">
+          <h2>Registro de Dueños</h2>
+
+          <p>
+            Administra los datos de los propietarios fácilmente.
+          </p>
+        </div>
+
+      </a>
+
+      <a href="censos.html" class="card-link">
+
+        <div class="card">
+          <h2>Registro de Censos</h2>
+
+          <p>
+            Relaciona mascotas, dueños y ubicación geográfica.
+          </p>
+        </div>
+
+      </a>
 
     </section>
 
