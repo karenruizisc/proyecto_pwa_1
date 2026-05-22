@@ -3,10 +3,10 @@
  */
 class CensoAPI {
     /**
-     * @param {string} baseUrl - URL base de la API (ej: 'https://miapi.com')
+     * @param {string} baseUrl
      */
     constructor(baseUrl) {
-        this.baseUrl = baseUrl.replace(/\/$/, ''); // Quita barra diagonal final si existe
+        this.baseUrl = baseUrl.replace(/\/$/, '');
         this.token = localStorage.getItem('jwt_token') || null;
     }
 
@@ -15,14 +15,11 @@ class CensoAPI {
      */
     async #request(endpoint, options = {}) {
         const url = `${this.baseUrl}${endpoint}`;
-        
-        // Configurar cabeceras por defecto
         options.headers = {
             'Content-Type': 'application/json',
             ...options.headers
         };
 
-        // Si hay un token guardado, añadirlo al header Authorization
         if (this.token) {
             options.headers['Authorization'] = `Bearer ${this.token}`;
         }
@@ -30,7 +27,6 @@ class CensoAPI {
         try {
             const response = await fetch(url, options);
 
-            // Manejar respuestas vacías (como el Status 204 No Content de la suscripción Push)
             if (response.status === 204) {
                 return { success: true };
             }
@@ -65,7 +61,7 @@ class CensoAPI {
         
         if (data && data.token) {
             this.token = data.token;
-            localStorage.setItem('jwt_token', data.token); // Guardar para persistencia
+            localStorage.setItem('jwt_token', data.token);
         }
         return data;
     }
@@ -93,7 +89,7 @@ class CensoAPI {
     }
 
     /**
-     * Crea una persona normal (sin credenciales de usuario)
+     * Crea una persona normal
      */
     async crearPersona(datosPersona) {
         return await this.#request('/api/v1/personas', {
