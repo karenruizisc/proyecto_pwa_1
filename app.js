@@ -1,10 +1,15 @@
-
-
 const API_URL = 'http://localhost:3303/mascota';
 
 let db;
 let syncManager;
 let mascotaEnEdicionId = null;
+
+if(navigator.serviceWorker){
+    navigator.serviceWorker.register('./sw.js').then(reg => console.log('Registro de SW exitoso', reg)).catch(err => console.warn('Error al registrar el SW', err));
+}
+
+var btnDesactivada = document.getElementById('btnDesactivada');
+var btnActivada = document.getElementById('btnActivada');
 
 class SyncManager {
     constructor(db) {
@@ -66,7 +71,7 @@ class SyncManager {
             const doc = row.doc;
             try {
                 if (doc.syncStatus === 'pending_create') {
-                    const res = await fetch(API_URL, {
+                    const res = await fetch(API_URL + "/mascota", {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ nombre: doc.nombre, tipo: doc.tipo, edad: doc.edad })
@@ -76,7 +81,7 @@ class SyncManager {
                     await this.db.put({ ...doc, remoteId: created.id, syncStatus: 'synced' });
 
                 } else if (doc.syncStatus === 'pending_update' && doc.remoteId) {
-                    const res = await fetch(`${API_URL}/${doc.remoteId}`, {
+                    const res = await fetch(`${API_URL}/mascota/${doc.remoteId}`, {
                         method: 'PATCH',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ nombre: doc.nombre, tipo: doc.tipo, edad: doc.edad })
@@ -86,7 +91,7 @@ class SyncManager {
 
                 } else if (doc.syncStatus === 'pending_delete') {
                     if (doc.remoteId) {
-                        const res = await fetch(`${API_URL}/${doc.remoteId}`, { method: 'DELETE' });
+                        const res = await fetch(`${API_URL}/mascota/${doc.remoteId}`, { method: 'DELETE' });
                         if (!res.ok && res.status !== 404) throw new Error(`HTTP ${res.status}`);
                     }
                     await this.db.remove(doc);
@@ -98,7 +103,7 @@ class SyncManager {
     }
 
     async syncDown() {
-        const res = await fetch(API_URL);
+        const res = await fetch(`${API_URL}/mascota`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const remoteMascotas = await res.json();
 
@@ -143,7 +148,15 @@ class SyncManager {
     }
 }
 
+var swReg;
 addEventListener('DOMContentLoaded', () => {
+
+    if (navigator.serviceWorker) {
+        navigator.serviceWorker.register('../sw.js').then(function (reg) {
+            swReg = reg;
+            swReg.pushManager.getSubscription().then(verificarSuscripcion);
+        });
+    }
     const dbName = 'mascotasDB';
     db = new PouchDB(dbName);
     syncManager = new SyncManager(db);
@@ -155,6 +168,7 @@ addEventListener('DOMContentLoaded', () => {
     btnCancelar.addEventListener('click', cancelarEdicion);
 
     cargarMascotas();
+    getGeoLocation();
 });
 
 function manejarEnvioFormulario(event) {
@@ -296,3 +310,104 @@ function cargarMascotas() {
 }
 
 
+//Notificaciones
+
+function verificarSuscripcion(activadas) {
+    if (activadas) {
+        document.getElementById('btnActivada').classList.remove('d-none');
+        document.getElementById('btnDesactivada').classList.add('d-none');
+    } else {
+        document.getElementById('btnActivada').classList.add('d-none');
+        document.getElementById('btnDesactivada').classList.remove('d-none');
+    }
+}
+
+
+function enviarNotificacion() {
+    alert("¡Gracias por usar nuestra aplicación!");
+    const notificacitionOptions = {
+        body: "elprofehugo.online/notificaciones",
+        icon: "/img/logo.jpg",
+    };
+    new Notification("¡Notificación de GeoMapFoto!", notificacitionOptions);
+}
+
+function notificarme() {
+    if (!("Notification" in window)) {
+        alert("Tu navegador no soporta notificaciones.");
+    } else if (Notification.permission === "granted") {
+        enviarNotificacion();
+    } else if (Notification.permission !== "denied" || Notification.permission === "default") {
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                enviarNotificacion();
+            }
+        });
+    }
+}
+
+// notificarme();
+
+//Get key
+
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/-/g, '+')
+        .replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
+function getPublicKey() {
+    return fetch(`${API_URL}/notificaciones/key`)
+        .then(res => res.text())
+        .then(key => urlBase64ToUint8Array(key));
+}
+
+// getPublicKey().then(console.log);
+
+btnDesactivada.addEventListener('click', function () {
+    if (!swReg) return console.error('No hay registro de Service Worker');
+    getPublicKey().then(key => {
+        swReg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: key
+        }).then(res => res.toJSON())
+            .then(subscription => {
+                console.log('Suscripción obtenida:', subscription);
+                fetch(`${API_URL}/notificaciones/subscribe`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(subscription)
+                })
+                    .then(verificarSuscripcion)
+                    .catch(console.log);
+            })
+            .catch(err => {
+                console.error('Error al suscribirse:', err);
+            });
+    }).catch(err => {
+        console.error('Error al obtener clave pública:', err);
+    });
+
+});
+
+
+function cancelarSuscripcion() {
+    swReg.pushManager.getSubscription().then(subscription => {
+        if (subscription) {
+            subscription.unsubscribe().then(() => verificarSuscripcion(false)).catch(err => {
+                console.error('Error al cancelar suscripción:', err);
+            });
+        }
+    });
+}
+
+btnActivada.addEventListener('click', function () {
+    cancelarSuscripcion();
+});
