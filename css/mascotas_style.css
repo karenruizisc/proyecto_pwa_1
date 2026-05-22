@@ -70,3 +70,7 @@ button{
   font-weight:bold;
   cursor:pointer;
 }
+
+button:hover{
+  transform:scale(1.02);
+}
