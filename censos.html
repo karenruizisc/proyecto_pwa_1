@@ -7,12 +7,12 @@
   <title>Registro de Censos</title>
 
   <link rel="stylesheet" href="/css/censos.css">
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 
 <body>
@@ -31,10 +31,6 @@
   </header>
 
   <div class="container">
-    <script src="geo.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/pouchdb@9.0.0/dist/pouchdb.min.js"></script>
-    <script src="app.js"></script>
-    <script src="photo.js"></script>
     <h1>Registro de Censo</h1>
 
     <form>
@@ -51,20 +47,6 @@
         <option>2</option>
       </select>
 
-          <div class="d-flex flex-column align-items-center my-4">
-        <div class="mb-2">
-            <select id="cameraSelect" class="form-select">
-                <option value="user">Cámara frontal</option>
-                <option value="environment">Cámara trasera</option>
-            </select>
-        </div>
-        <button id="btnCamara" class="btn btn-secondary mb-2">Abrir cámara</button>
-        <video id="video" width="320" height="240" autoplay style="display:none; border:1px solid #ccc; border-radius:8px;"></video>
-        <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
-        <img id="foto" alt="Foto tomada" style="display:none; max-width:320px; border:1px solid #ccc; border-radius:8px; margin-top:10px;" />
-        <button id="btnFoto" class="btn btn-primary mt-2" style="display:none;">Tomar foto</button>
-    </div>
-
       <div class="map-section">
 
         <button type="button" onclick="getGeoLocation()" style="margin-bottom: 10px;">Obtener Ubicación</button>
@@ -78,6 +60,10 @@
 
     </form>
 
+    <script src="geo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pouchdb@9.0.0/dist/pouchdb.min.js"></script>
+    <script src="app.js"></script>
+    <script src="photo.js"></script>
   </div>
 
 </body>
