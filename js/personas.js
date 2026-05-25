@@ -1,15 +1,25 @@
 
-const API_URL = "https://elprofehugo.online/api/v1/auth/login";
+const API_URL = "https://elprofehugo.online/api/v1/personas/registro";
 
+const loginForm = document.getElementById("PersonForm");
 
+const nombres = document.getElementById("nombres").value.trim();
 
-const loginForm = document.getElementById("loginForm");
+const apellidos = document.getElementById("apellidos").value.trim();
 
-const message = document.getElementById("message");
+const tipoDocumento = document.getElementById("tipoDocumento").value.trim();
 
-const emailInput = document.getElementById("email");
+const documento = document.getElementById("documento").value.trim();
 
-const passwordInput = document.getElementById("password");
+const direccion = document.getElementById("direccion").value.trim();
+
+const telefono = document.getElementById("telefono").value.trim();
+
+const ciudad = document.getElementById("ciudad").value.trim();
+
+const usuario = document.getElementById("usuario").value.trim();
+
+const contrasena = document.getElementById("contrasena").value.trim();
 
 
 loginForm.addEventListener("submit", async (e) => {
@@ -31,12 +41,16 @@ loginForm.addEventListener("submit", async (e) => {
         return;
     }
 
-    const loginData = {
-
-        usuario: email,
-
-        contrasena: password
-
+    const PersonData = {
+        nombres,
+        apellidos,
+        tipoDocumento,
+        documento,
+        direccion,
+        telefono,
+        ciudad,
+        usuario,
+        contrasena
     };
 
     try{
@@ -47,11 +61,11 @@ loginForm.addEventListener("submit", async (e) => {
 
             headers: {
 
-                "Content-Type": "application/json"
-
+                "Content-Type": "application/json",
+                "authorization": `Bearer ${getToken()}`
             },
 
-            body: JSON.stringify(loginData)
+            body: JSON.stringify(PersonData)
 
         });
 
@@ -61,28 +75,13 @@ loginForm.addEventListener("submit", async (e) => {
         if(!response.ok){
 
             throw new Error(
-                data.message || "Error al iniciar sesión"
+                data.message || "Error al registrar persona"
             );
 
         }else{
-             window.location.href = 'dashboard.html';
+
         }
 
-        /*
-        ========================================
-        RESPUESTA ESPERADA DEL BACKEND
-        ========================================
-
-        {
-            "token": "eyJhbGciOiJIUzI1NiJ9...",
-            "user": {
-                "id": 1,
-                "nombre": "Juan",
-                "email": "juan@gmail.com"
-            }
-        }
-
-        */
 
 
         localStorage.setItem(
@@ -137,25 +136,5 @@ function showMessage(text, type){
 function getToken(){
 
     return localStorage.getItem("token");
-
-}
-
-
-function logout(){
-
-    localStorage.removeItem("token");
-
-    localStorage.removeItem("user");
-
-    window.location.href = "index.html";
-
-}
-
-
-function isAuthenticated(){
-
-    const token = localStorage.getItem("token");
-
-    return token !== null;
 
 }
