@@ -1,68 +1,97 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mascotas Censo</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="manifest" href="manifest.json">
+    <title>Login - Censo Mascotas</title>
+
+    <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
 
-  <header class="header">
+    <div class="login-container">
 
-    <div class="logo-container">
-      <img src="./img/logo.png" alt="Logo Mascotas Censo" class="logo">
-    </div>
+        <!-- LEFT -->
+        <div class="login-left">
 
-    <nav class="navbar">
-      <a href="index.html">Inicio</a>
-      <a href="mascotas.html">Mascotas</a>
-      <a href="personas.html">Dueños</a>
-      <a href="censos.html">Censos</a>
-    </nav>
+            <div class="logo">
+                <img src="img/logo.png" alt="Logo">
+            </div>
 
-  </header>
+            <h2 class="login-title">
+                Bienvenido
+            </h2>
 
-  <main class="main">
+            <p class="login-subtitle">
+                Sistema de Censo de Mascotas
+            </p>
 
-    <section class="hero">
+            <form id="loginForm">
 
-      <div class="hero-text">
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
 
-        <h1>Censo de Mascotas</h1>
+                    <input
+                        type="email"
+                        id="email"
+                        class="form-control"
+                        placeholder="correo@ejemplo.com"
+                        required
+                    >
+                </div>
 
-        <p>
-          Plataforma para registrar, visualizar y gestionar información
-          de mascotas y sus propietarios.
-        </p>
+                <div class="form-group">
+                    <label>Contraseña</label>
 
-        <div class="buttons">
+                    <input
+                        type="password"
+                        id="password"
+                        class="form-control"
+                        placeholder="********"
+                        required
+                    >
+                </div>
 
-          <a href="mascotas.html">
-            <button>Registrar Mascota</button>
-          </a>
+                <button type="submit" class="login-btn">
+                    Ingresar
+                </button>
 
-          <a href="personas.html">
-            <button>Registrar Dueño</button>
-          </a>
+                <div id="message" class="message"></div>
 
-          <a href="censos.html">
-            <button>Nuevo Censo</button>
-          </a>
+            </form>
 
         </div>
 
-      </div>
+        <!-- RIGHT -->
+        <div class="login-right">
 
-      <div class="hero-image">
-        <img src="./img/logo.png" alt="Mascotas Censo">
-      </div>
+            <img
+                src="img/logo.png"
+                alt="Imagen Login"
+            >
 
-    </section>
+            <div class="overlay"></div>
 
-  </main>
+            <div class="right-content">
+
+                <h2>
+                    Censo de Mascotas
+                </h2>
+
+                <p>
+                    Plataforma moderna para registrar,
+                    administrar y gestionar mascotas
+                    y sus propietarios.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="js/login.js"></script>
 
 </body>
 </html>
