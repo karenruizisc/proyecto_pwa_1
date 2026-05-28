@@ -4,6 +4,10 @@ function getGeoLocation() {
             function (position) {
                 console.log("Latitud:", position.coords.latitude);
                 console.log("Longitud:", position.coords.longitude);
+                window.currentLocation = {
+                    latitud: position.coords.latitude,
+                    longitud: position.coords.longitude
+                };
                 mostrarMapa(position.coords.latitude, position.coords.longitude);
             },
             function (error) {

@@ -1,161 +1,51 @@
-
-const API_URL = "https://elprofehugo.online/api/v1/auth/login";
-
-
+const authService = new AuthService();
 
 const loginForm = document.getElementById("loginForm");
-
 const message = document.getElementById("message");
-
 const emailInput = document.getElementById("email");
-
 const passwordInput = document.getElementById("password");
 
+loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-loginForm.addEventListener("submit", async (e) => {
+    const usuario = emailInput.value.trim();
+    const contrasena = passwordInput.value.trim();
 
-    e.preventDefault();
-
-    const email = emailInput.value.trim();
-
-    const password = passwordInput.value.trim();
-
-
-    if(email === "" || password === ""){
-
-        showMessage(
-            "Todos los campos son obligatorios",
-            "error"
-        );
-
+    if (!usuario || !contrasena) {
+        showMessage("Todos los campos son obligatorios", "error");
         return;
     }
 
-    const loginData = {
-
-        usuario: email,
-
-        contrasena: password
-
-    };
-
-    try{
-
-        const response = await fetch(API_URL, {
-
-            method: "POST",
-
-            headers: {
-
-                "Content-Type": "application/json"
-
-            },
-
-            body: JSON.stringify(loginData)
-
-        });
-
-        const data = await response.json();
-
-
-        if(!response.ok){
-
-            throw new Error(
-                data.message || "Error al iniciar sesión"
-            );
-
-        }else{
-             window.location.href = 'dashboard.html';
-        }
-
-        /*
-        ========================================
-        RESPUESTA ESPERADA DEL BACKEND
-        ========================================
-
-        {
-            "token": "eyJhbGciOiJIUzI1NiJ9...",
-            "user": {
-                "id": 1,
-                "nombre": "Juan",
-                "email": "juan@gmail.com"
-            }
-        }
-
-        */
-
-
-        localStorage.setItem(
-            "token",
-            data.token
-        );
-
-
-        localStorage.setItem(
-            "user",
-            JSON.stringify(data.user)
-        );
-
-
-        showMessage(
-            "Inicio de sesión exitoso",
-            "success"
-        );
-
+    try {
+        const data = await authService.login(usuario, contrasena);
+        authService.setSession(data);
+        showMessage("Inicio de sesion exitoso", "success");
 
         setTimeout(() => {
-
-            window.location.href = "index.html";
-
-        }, 1000);
-
-    }catch(error){
-
+            window.location.href = "dashboard.html";
+        }, 700);
+    } catch (error) {
         console.error(error);
-
-        showMessage(
-            error.message,
-            "error"
-        );
-
+        showMessage(error.message, "error");
     }
-
 });
 
-
-function showMessage(text, type){
-
+function showMessage(text, type) {
+    if (!message) return;
     message.textContent = text;
-
     message.className = `message ${type}`;
-
     message.style.display = "block";
-
 }
 
-
-function getToken(){
-
-    return localStorage.getItem("token");
-
+function getToken() {
+    return authService.token;
 }
 
-
-function logout(){
-
-    localStorage.removeItem("token");
-
-    localStorage.removeItem("user");
-
+function logout() {
+    authService.logout();
     window.location.href = "index.html";
-
 }
 
-
-function isAuthenticated(){
-
-    const token = localStorage.getItem("token");
-
-    return token !== null;
-
+function isAuthenticated() {
+    return authService.isAuthenticated();
 }
