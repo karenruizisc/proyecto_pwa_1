@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
             await censosService.crearCenso(censo);
             form.reset();
             document.getElementById("idProyecto").value = "PWA_GRUPO_01";
-            document.getElementById("color").value = "#FF5733";
+            document.getElementById("color").value = "#06cf0c";
             showMessage(message, "Censo registrado correctamente", "success");
             await cargarCensos();
         } catch (error) {
