@@ -4,8 +4,14 @@ let db;
 let syncManager;
 let mascotaEnEdicionId = null;
 
-if(navigator.serviceWorker){
-    navigator.serviceWorker.register('./sw.js').then(reg => console.log('Registro de SW exitoso', reg)).catch(err => console.warn('Error al registrar el SW', err));
+if (navigator.serviceWorker) {
+    navigator.serviceWorker.register('/sw.js').then(reg => {
+        console.log('Registro de SW exitoso', reg);
+        swReg = reg;
+        if (swReg && swReg.pushManager) {
+            swReg.pushManager.getSubscription().then(verificarSuscripcion).catch(() => {});
+        }
+    }).catch(err => console.warn('Error al registrar el SW', err));
 }
 
 var btnDesactivada = document.getElementById('btnDesactivada');
@@ -152,7 +158,7 @@ var swReg;
 addEventListener('DOMContentLoaded', () => {
 
     if (navigator.serviceWorker) {
-        navigator.serviceWorker.register('../sw.js').then(function (reg) {
+        navigator.serviceWorker.register('/sw.js').then(function (reg) {
             swReg = reg;
             swReg.pushManager.getSubscription().then(verificarSuscripcion);
         });

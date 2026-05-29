@@ -3,24 +3,25 @@ const CACHE_STATIC = "cache-static-v1";
 const CACHE_DYNAMIC = "cache-dynamic-v1";
 
 const APP_SHELL = [
-    "/dashboard.html",
-    "/mascotas.html",
-    "/personas.html",
-    "/censos.html",
-    "/notificaciones.html",
-    "/css/style.css",
-    "/css/mascotas_style.css",
-    "/css/personas.css",
-    "/css/censos.css",
-    "/css/notificaciones.css",
-    "/js/app.js",
-    "/js/auth-guard.js",
-    "/js/mascotas.js",
-    "/js/personas.js",
-    "/js/censo.js",
-    "/js/geo.js",
-    "/js/photo.js",
-    "/js/notificaciones.js",
+    "./index.html",
+    "./dashboard.html",
+    "./mascotas.html",
+    "./personas.html",
+    "./censos.html",
+    "./notificaciones.html",
+    "./css/style.css",
+    "./css/mascotas_style.css",
+    "./css/personas.css",
+    "./css/censos.css",
+    "./css/notificaciones.css",
+    "./js/app.js",
+    "./js/auth-guard.js",
+    "./js/mascotas.js",
+    "./js/personas.js",
+    "./js/censo.js",
+    "./js/geo.js",
+    "./js/photo.js",
+    "./js/notificaciones.js",
 ];
 
 const APP_SHELL_INMUTABLE = [
@@ -28,8 +29,8 @@ const APP_SHELL_INMUTABLE = [
     "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css",
     "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
     "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
-    "/manifest.json",
-    "/img/logo.png",
+    "./manifest.json",
+    "./img/logo.png",
 ];
 
 function limpiarCache(cacheName, numeroItems) {

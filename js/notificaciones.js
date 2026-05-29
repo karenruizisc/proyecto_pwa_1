@@ -13,11 +13,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    await refreshSubscriptionState();
-    console.error(error);
-    setStatus("No se pudo registrar el service worker.", "error");
-    setButtons(false, false, false);
-
+    try {
+        swRegistration = await navigator.serviceWorker.ready;
+        await refreshSubscriptionState();
+    } catch (error) {
+        console.error(error);
+        setStatus("No se pudo registrar el service worker.", "error");
+        setButtons(false, false, false);
+    }
 });
 
 activateButton.addEventListener("click", async () => {
