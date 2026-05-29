@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-        swRegistration = await navigator.serviceWorker.register("/js/sw.js");
         await refreshSubscriptionState();
     } catch (error) {
         console.error(error);
