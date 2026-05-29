@@ -14,9 +14,6 @@ if (navigator.serviceWorker) {
     }).catch(err => console.warn('Error al registrar el SW', err));
 }
 
-var btnDesactivada = document.getElementById('btnDesactivada');
-var btnActivada = document.getElementById('btnActivada');
-
 class SyncManager {
     constructor(db) {
         this.db = db;
@@ -161,20 +158,48 @@ addEventListener('DOMContentLoaded', () => {
         navigator.serviceWorker.register('/sw.js').then(function (reg) {
             swReg = reg;
             swReg.pushManager.getSubscription().then(verificarSuscripcion);
-        });
+        }).catch(err => console.warn('Error al registrar el SW', err));
     }
-    const dbName = 'mascotasDB';
-    db = new PouchDB(dbName);
-    syncManager = new SyncManager(db);
 
-    const formulario = document.getElementById('mascotaForm');
+    const mascotaForm = document.getElementById('mascotaForm');
     const btnCancelar = document.getElementById('btnCancelarEdicion');
+    const btnDesactivada = document.getElementById('btnDesactivada') || document.getElementById('btnDesactivarNotificaciones');
+    const btnActivada = document.getElementById('btnActivada') || document.getElementById('btnActivarNotificaciones');
 
-    formulario.addEventListener('submit', manejarEnvioFormulario);
-    btnCancelar.addEventListener('click', cancelarEdicion);
+    if (mascotaForm) {
+        if (!window.PouchDB) {
+            console.warn('PouchDB no está disponible. Las funciones de sincronización se deshabilitan.');
+        } else {
+            const dbName = 'mascotasDB';
+            db = new PouchDB(dbName);
+            syncManager = new SyncManager(db);
+        }
 
-    cargarMascotas();
-    getGeoLocation();
+        mascotaForm.addEventListener('submit', manejarEnvioFormulario);
+        if (btnCancelar) {
+            btnCancelar.addEventListener('click', cancelarEdicion);
+        }
+
+        if (db) {
+            cargarMascotas();
+        }
+    }
+
+    if (typeof getGeoLocation === 'function') {
+        getGeoLocation();
+    }
+
+    if (btnDesactivada) {
+        btnDesactivada.addEventListener('click', suscribirNotificaciones);
+    }
+
+    if (btnActivada) {
+        btnActivada.addEventListener('click', cancelarSuscripcion);
+    }
+
+    if (swReg && swReg.pushManager) {
+        swReg.pushManager.getSubscription().then(verificarSuscripcion).catch(() => {});
+    }
 });
 
 function manejarEnvioFormulario(event) {
@@ -319,12 +344,16 @@ function cargarMascotas() {
 //Notificaciones
 
 function verificarSuscripcion(activadas) {
+    const btnActivada = document.getElementById('btnActivada') || document.getElementById('btnActivarNotificaciones');
+    const btnDesactivada = document.getElementById('btnDesactivada') || document.getElementById('btnDesactivarNotificaciones');
+    if (!btnActivada || !btnDesactivada) return;
+
     if (activadas) {
-        document.getElementById('btnActivada').classList.remove('d-none');
-        document.getElementById('btnDesactivada').classList.add('d-none');
+        btnActivada.classList.remove('d-none');
+        btnDesactivada.classList.add('d-none');
     } else {
-        document.getElementById('btnActivada').classList.add('d-none');
-        document.getElementById('btnDesactivada').classList.remove('d-none');
+        btnActivada.classList.add('d-none');
+        btnDesactivada.classList.remove('d-none');
     }
 }
 
@@ -377,8 +406,8 @@ function getPublicKey() {
 
 // getPublicKey().then(console.log);
 
-btnDesactivada.addEventListener('click', function () {
-    if (!swReg) return console.error('No hay registro de Service Worker');
+function suscribirNotificaciones() {
+    if (!swReg || !swReg.pushManager) return console.error('No hay registro de Service Worker o Push Manager no está disponible');
     getPublicKey().then(key => {
         swReg.pushManager.subscribe({
             userVisibleOnly: true,
@@ -400,11 +429,11 @@ btnDesactivada.addEventListener('click', function () {
     }).catch(err => {
         console.error('Error al obtener clave pública:', err);
     });
-
-});
+}
 
 
 function cancelarSuscripcion() {
+    if (!swReg || !swReg.pushManager) return console.error('No hay registro de Service Worker o Push Manager no está disponible');
     swReg.pushManager.getSubscription().then(subscription => {
         if (subscription) {
             subscription.unsubscribe().then(() => verificarSuscripcion(false)).catch(err => {
@@ -413,7 +442,3 @@ function cancelarSuscripcion() {
         }
     });
 }
-
-btnActivada.addEventListener('click', function () {
-    cancelarSuscripcion();
-});
