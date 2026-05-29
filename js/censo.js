@@ -12,9 +12,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const fotografia = await getFotografiaCenso();
         const location = window.currentLocation;
 
+        const mascotaSelect = document.getElementById("idMascota");
+        const duenoSelect = document.getElementById("idDueno");
+        const mascotaLabel = mascotaSelect?.selectedOptions?.[0]?.textContent?.trim() || "";
+        const duenoLabel = duenoSelect?.selectedOptions?.[0]?.textContent?.trim() || "";
+
+        const idMascota = getValue("idMascota");
+        const idDueno = getValue("idDueno");
+
         const censo = {
-            idMascota: getValue("idMascota"),
-            idDueno: getValue("idDueno"),
+            idMascota,
+            idDueno,
+            idPersona: idDueno,
+            mascotaNombre: mascotaLabel,
+            duenoNombre: duenoLabel,
             fotografia,
             lat: location ? location.latitud : "",
             lon: location ? location.longitud : "",
@@ -206,7 +217,7 @@ function getDuenoLabel(censo) {
         return [censo.dueno.nombres, censo.dueno.apellidos].filter(Boolean).join(" ");
     }
 
-    return censo.personaNombre || censo.duenoNombre || censo.idDueno || "";
+    return censo.personaNombre || censo.duenoNombre || censo.idDueno || censo.idPersona || "";
 }
 
 function escapeHtml(value) {

@@ -73,14 +73,30 @@ self.addEventListener("fetch", (event) => {
         return;
     }
 
+    const requestUrl = new URL(event.request.url);
+    const isApiRequest = requestUrl.origin === "https://elprofehugo.online";
+
+    if (isApiRequest) {
+        const networkFirst = fetch(event.request).then((networkResponse) => {
+            return caches.open(CACHE_DYNAMIC).then((cache) => {
+                cache.put(event.request, networkResponse.clone());
+                limpiarCache(CACHE_DYNAMIC, 50);
+                return networkResponse;
+            });
+        }).catch(() => {
+            return caches.match(event.request);
+        });
+
+        event.respondWith(networkFirst);
+        return;
+    }
+
     const respuesta = caches.match(event.request).then((cachedResponse) => {
         if (cachedResponse) {
             return cachedResponse;
         }
 
         return fetch(event.request).then((networkResponse) => {
-            const requestUrl = new URL(event.request.url);
-
             if (requestUrl.origin === location.origin) {
                 caches.open(CACHE_DYNAMIC).then((cache) => {
                     cache.put(event.request, networkResponse.clone());
