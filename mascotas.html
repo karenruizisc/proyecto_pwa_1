@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Mascotas</title>
+
+  <script src="js/auth-guard.js"></script>
+  <link rel="stylesheet" href="/css/mascotas_style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <header>
+
+    <img src="/img/logo.png" class="logo" alt="Logo">
+
+    <nav>
+      <a href="dashboard.html">Inicio</a>
+      <a href="mascotas.html">Mascotas</a>
+      <a href="personas.html">Dueños</a>
+      <a href="censos.html">Censos</a>
+    </nav>
+
+  </header>
+
+  <div class="container">
+
+    <h1>Registro de Mascotas</h1>
+
+    <form id="mascotaForm">
+
+      <input type="text" placeholder="Nombre de la mascota" id="nombre">
+
+      <select id="tipo">
+        <option value="">Seleccione tipo</option>
+        <option value="PERRO">Perro</option>
+        <option value="GATO">Gato</option>
+        <option value="AVE">Ave</option>
+      </select>
+
+      <select id="genero">
+        <option value="">Seleccione género</option>
+        <option value="MACHO">Macho</option>
+        <option value="HEMBRA">Hembra</option>
+      </select>
+
+      <input type="number" placeholder="Edad" id="edad">
+
+      <div class="d-flex flex-column align-items-center my-4">
+        <div class="mb-2">
+          <select id="cameraSelect" class="form-select">
+            <option value="user">Cámara frontal</option>
+            <option value="environment">Cámara trasera</option>
+          </select>
+        </div>
+        <button type="button" id="btnCamara" class="btn btn-secondary mb-2">Abrir cámara</button>
+        <video id="video" width="320" height="240" autoplay
+          style="display:none; border:1px solid #ccc; border-radius:8px;"></video>
+        <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+        <img id="foto" alt="Foto tomada"
+          style="display:none; max-width:320px; border:1px solid #ccc; border-radius:8px; margin-top:10px;" />
+        <button type="button" id="btnFoto" class="btn btn-primary mt-2" style="display:none;">Tomar foto</button>
+      </div>
+
+      <div class="d-flex flex-column align-items-center my-4">
+        <button type="submit">Guardar Mascota</button>
+      </div>
+
+    </form>
+
+    <div id="message" class="message"></div>
+
+    <div class="table-section">
+    <table id="mascotasTable" class="table app-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Tipo</th>
+          <th>Género</th>
+          <th>Edad</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    </div>
+
+    <script src="services/base.service.js"></script>
+    <script src="services/mascotas.service.js"></script>
+    <script src="js/mascotas.js"></script>
+    <script src="js/photo.js"></script>
+  </div>
+
+</body>
+
+</html>

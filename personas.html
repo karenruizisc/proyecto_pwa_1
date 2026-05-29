@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Dueños</title>
+
+  <script src="js/auth-guard.js"></script>
+  <link rel="stylesheet" href="/css/personas.css">
+</head>
+<body>
+
+<header>
+
+  <img src="/img/logo.png" class="logo" alt="Logo">
+
+  <nav>
+    <a href="dashboard.html">Inicio</a>
+    <a href="mascotas.html">Mascotas</a>
+    <a href="personas.html">Dueños</a>
+    <a href="censos.html">Censos</a>
+  </nav>
+
+</header>
+
+<div class="container">
+
+  <h1>Registro de Dueños</h1>
+
+  <form id="PersonForm">
+
+    <input type="text" placeholder="Nombres" id="nombres">
+
+    <input type="text" placeholder="Apellidos" id="apellidos">
+
+    <select id="tipoDocumento">
+      <option value="">Tipo de documento</option>
+      <option>CC</option>
+      <option>CE</option>
+      <option>Pasaporte</option>
+    </select>
+
+    <input type="text" placeholder="Número de documento" id="documento">
+
+    <input type="text" placeholder="Dirección" id="direccion">
+
+    <input type="text" placeholder="Teléfono" id="telefono">
+
+    <input type="text" placeholder="Ciudad" id="ciudad">
+
+    <input type="text" placeholder="Usuario" id="usuario">
+
+    <input type="password" placeholder="Contraseña" id="contrasena">
+
+    <button type="submit">Guardar Dueño</button>
+
+  </form>
+
+  <div id="message" class="message"></div>
+
+  <div class="table-section">
+  <table id="personasTable">
+    <thead>
+      <tr>
+        <th>Nombres</th>
+        <th>Apellidos</th>
+        <th>Documento</th>
+        <th>Teléfono</th>
+        <th>Ciudad</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  </div>
+
+</div>
+
+<script src="services/base.service.js"></script>
+<script src="services/personas.service.js"></script>
+<script src="js/personas.js"></script>
+
+</body>
+</html>

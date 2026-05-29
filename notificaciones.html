@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notificaciones Push</title>
+
+  <script src="js/auth-guard.js"></script>
+  <link rel="stylesheet" href="css/notificaciones.css">
+</head>
+
+<body>
+  <header>
+    <img src="/img/logo.png" class="logo" alt="Logo">
+
+    <nav>
+      <a href="dashboard.html">Inicio</a>
+      <a href="mascotas.html">Mascotas</a>
+      <a href="personas.html">Dueños</a>
+      <a href="censos.html">Censos</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1>Notificaciones Push</h1>
+
+    <div id="notificationStatus" class="notification-status info">
+      Verificando estado de notificaciones...
+    </div>
+
+    <div class="actions">
+      <button id="btnActivarNotificaciones" type="button">Activar notificaciones</button>
+      <button id="btnDesactivarNotificaciones" type="button" class="secondary">Desactivar notificaciones</button>
+      <!-- <button id="btnProbarNotificacion" type="button" class="secondary">Mostrar notificación de prueba</button> -->
+    </div>
+  </main>
+
+  <script src="services/base.service.js"></script>
+  <script src="services/push.service.js"></script>
+  <script src="js/notificaciones.js"></script>
+</body>
+
+</html>

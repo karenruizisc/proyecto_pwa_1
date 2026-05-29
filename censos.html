@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Censos</title>
+
+  <script src="js/auth-guard.js"></script>
+  <link rel="stylesheet" href="/css/censos.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+
+<body>
+
+  <header>
+
+    <img src="/img/logo.png" class="logo" alt="Logo">
+
+    <nav>
+      <a href="dashboard.html">Inicio</a>
+      <a href="mascotas.html">Mascotas</a>
+      <a href="personas.html">Dueños</a>
+      <a href="censos.html">Censos</a>
+    </nav>
+
+  </header>
+
+  <div class="container">
+    <h1>Registro de Censo</h1>
+
+    <form id="censoForm">
+
+      <select id="idMascota">
+        <option value="">Seleccionar Mascota</option>
+      </select>
+
+      <select id="idDueno">
+        <option value="">Seleccionar Dueño</option>
+      </select>
+
+      <input type="hidden" id="idProyecto" value="PWA_GRUPO_06">
+
+      <input type="hidden" id="color" value="#06cf0c">
+
+      <div class="map-section">
+
+        <button type="button" onclick="getGeoLocation()" style="margin-bottom: 10px;">Obtener Ubicación</button>
+        <div id="map" style="height: 400px; width: 100%; margin-bottom: 1rem;"></div>
+
+      </div>
+
+      <button type="submit">Guardar Censo</button>
+
+    </form>
+
+    <div id="message" class="message"></div>
+
+    <div class="table-section">
+    <table id="censosTable" class="table app-table">
+      <thead>
+        <tr>
+          <th>Mascota</th>
+          <th>Dueño</th>
+          <th>Latitud</th>
+          <th>Longitud</th>
+          <th>Color</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    </div>
+
+    <script src="services/base.service.js"></script>
+    <script src="services/personas.service.js"></script>
+    <script src="services/mascotas.service.js"></script>
+    <script src="services/censos.service.js"></script>
+    <script src="js/geo.js"></script>
+    <script src="js/photo.js"></script>
+    <script src="js/censo.js"></script>
+  </div>
+
+</body>
+
+</html>
