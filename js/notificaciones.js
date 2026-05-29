@@ -3,7 +3,7 @@ const pushService = new PushService();
 const statusText = document.getElementById("notificationStatus");
 const activateButton = document.getElementById("btnActivarNotificaciones");
 const deactivateButton = document.getElementById("btnDesactivarNotificaciones");
-const testButton = document.getElementById("btnProbarNotificacion");
+// const testButton = document.getElementById("btnProbarNotificacion");
 
 let swRegistration = null;
 
@@ -67,22 +67,6 @@ deactivateButton.addEventListener("click", async () => {
     }
 });
 
-testButton.addEventListener("click", () => {
-    if (Notification.permission !== "granted") {
-        setStatus("Primero activa el permiso de notificaciones.", "error");
-        return;
-    }
-
-    swRegistration.showNotification("Censo de Mascotas", {
-        body: "Las notificaciones push están activas.",
-        icon: "/img/logo.png",
-        badge: "/favicon.ico",
-        data: {
-            url: "/notificaciones.html"
-        }
-    });
-});
-
 function isPushSupported() {
     return "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
 }
@@ -127,7 +111,6 @@ function setStatus(text, type) {
 function setButtons(canActivate, canDeactivate, canTest) {
     activateButton.disabled = !canActivate;
     deactivateButton.disabled = !canDeactivate;
-    testButton.disabled = !canTest;
 }
 
 function urlBase64ToUint8Array(base64String) {
