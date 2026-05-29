@@ -3,7 +3,6 @@ const pushService = new PushService();
 const statusText = document.getElementById("notificationStatus");
 const activateButton = document.getElementById("btnActivarNotificaciones");
 const deactivateButton = document.getElementById("btnDesactivarNotificaciones");
-// const testButton = document.getElementById("btnProbarNotificacion");
 
 let swRegistration = null;
 
