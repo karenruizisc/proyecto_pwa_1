@@ -31,6 +31,7 @@ const APP_SHELL_INMUTABLE = [
     "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
     "./manifest.json",
     "./img/logo.png",
+    "./favicon.ico",
 ];
 
 function limpiarCache(cacheName, numeroItems) {
