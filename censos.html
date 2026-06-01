@@ -7,11 +7,9 @@
   <title>Registro de Censos</title>
 
   <script src="js/auth-guard.js"></script>
-  <link rel="stylesheet" href="/css/censos.css">
+  <link rel="stylesheet" href="css/censos.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 
 <body>
@@ -25,6 +23,7 @@
       <a href="mascotas.html">Mascotas</a>
       <a href="personas.html">Dueños</a>
       <a href="censos.html">Censos</a>
+      <a href="notificaciones.html">Notificaciones</a>
     </nav>
 
   </header>
@@ -42,15 +41,32 @@
         <option value="">Seleccionar Dueño</option>
       </select>
 
-      <input type="hidden" id="idProyecto" value="PWA_GRUPO_06">
+      <input type="hidden" id="idProyecto" value="PROYWA_006">
 
-      <input type="hidden" id="color" value="#06cf0c">
+      <input type="hidden" id="color" value="#06CF0C">
 
       <div class="map-section">
 
         <button type="button" onclick="getGeoLocation()" style="margin-bottom: 10px;">Obtener Ubicación</button>
+        <div id="mapStatus" class="map-status info">Inicializando mapa...</div>
         <div id="map" style="height: 400px; width: 100%; margin-bottom: 1rem;"></div>
 
+      </div>
+
+      <div class="d-flex flex-column align-items-center my-4">
+        <div class="mb-2">
+          <select id="cameraSelect" class="form-select">
+            <option value="environment">Cámara trasera</option>
+            <option value="user">Cámara frontal</option>
+          </select>
+        </div>
+        <button type="button" id="btnCamara" class="btn btn-secondary mb-2">Abrir cámara</button>
+        <video id="video" width="320" height="240" autoplay
+          style="display:none; border:1px solid #ccc; border-radius:8px;"></video>
+        <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+        <img id="foto" alt="Foto tomada"
+          style="display:none; max-width:320px; border:1px solid #ccc; border-radius:8px; margin-top:10px;" />
+        <button type="button" id="btnFoto" class="btn btn-primary mt-2" style="display:none;">Tomar foto</button>
       </div>
 
       <button type="submit">Guardar Censo</button>
@@ -78,6 +94,7 @@
     <script src="services/personas.service.js"></script>
     <script src="services/mascotas.service.js"></script>
     <script src="services/censos.service.js"></script>
+    <script src="js/maps-config.js"></script>
     <script src="js/geo.js"></script>
     <script src="js/photo.js"></script>
     <script src="js/censo.js"></script>

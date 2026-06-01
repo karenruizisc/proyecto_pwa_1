@@ -1,11 +1,11 @@
-const API_URL = 'http://localhost:3303/mascota';
+const API_URL = 'https://proyectopwa.online/pwa_006/';
 
 let db;
 let syncManager;
 let mascotaEnEdicionId = null;
 
 if (navigator.serviceWorker) {
-    navigator.serviceWorker.register('/sw.js').then(reg => {
+    navigator.serviceWorker.register('./sw.js').then(reg => {
         console.log('Registro de SW exitoso', reg);
         swReg = reg;
         if (swReg && swReg.pushManager) {

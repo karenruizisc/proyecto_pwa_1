@@ -97,6 +97,27 @@ textarea {
   gap: 15px;
 }
 
+.map-status {
+  border-radius: 10px;
+  font-weight: bold;
+  padding: 12px 14px;
+}
+
+.map-status.info {
+  background: #eef3ff;
+  color: #1f4b99;
+}
+
+.map-status.success {
+  background: #eaf8ef;
+  color: #1b7f3a;
+}
+
+.map-status.error {
+  background: #fdecec;
+  color: #b00020;
+}
+
 .map-section h3 {
   color: #222;
   font-size: 20px;
@@ -178,6 +199,43 @@ button:hover {
 
 #censosTable.app-table tbody tr:hover {
   background: #fff9df;
+}
+
+.color-swatch {
+  border: 1px solid #d0d0d0;
+  border-radius: 999px;
+  display: inline-block;
+  height: 14px;
+  margin-right: 8px;
+  vertical-align: middle;
+  width: 14px;
+}
+
+.info-window {
+  max-width: 280px;
+}
+
+.info-window h3 {
+  font-size: 18px;
+  margin: 0 0 10px;
+}
+
+.info-window section {
+  border-top: 1px solid #e5e5e5;
+  padding: 10px 0;
+}
+
+.info-window p {
+  margin: 4px 0;
+}
+
+.info-window-photo {
+  border-radius: 8px;
+  display: block;
+  margin-top: 10px;
+  max-height: 160px;
+  object-fit: cover;
+  width: 100%;
 }
 
 /* RESPONSIVE */

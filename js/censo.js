@@ -9,55 +9,42 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        const fotografia = await getFotografiaCenso();
-        const location = window.currentLocation;
-
-        const mascotaSelect = document.getElementById("idMascota");
-        const duenoSelect = document.getElementById("idDueno");
-        const mascotaLabel = mascotaSelect?.selectedOptions?.[0]?.textContent?.trim() || "";
-        const duenoLabel = duenoSelect?.selectedOptions?.[0]?.textContent?.trim() || "";
-
         const idMascota = getValue("idMascota");
         const idDueno = getValue("idDueno");
 
-        const censo = {
-            idMascota,
-            idDueno,
-            idPersona: idDueno,
-            mascotaNombre: mascotaLabel,
-            duenoNombre: duenoLabel,
-            fotografia,
-            lat: location ? location.latitud : "",
-            lon: location ? location.longitud : "",
-            idProyecto: getValue("idProyecto"),
-            color: getValue("color")
-        };
-
-        if (!censo.idMascota || !censo.idDueno) {
+        if (!idMascota || !idDueno) {
             showMessage(message, "Selecciona una mascota y un dueño", "error");
             return;
         }
 
-        if (!censo.lat || !censo.lon) {
-            showMessage(message, "Obtén la ubicación antes de guardar el censo", "error");
-            return;
-        }
-
-        if (!censo.idProyecto) {
-            showMessage(message, "El proyecto es obligatorio", "error");
-            return;
-        }
-
-        if (!/^#[0-9A-Fa-f]{6}$/.test(censo.color)) {
-            showMessage(message, "Selecciona un color valido", "error");
-            return;
-        }
-
         try {
+            showMessage(message, "Capturando ubicación actual...", "info");
+            const location = await window.captureCurrentPosition();
+            const fotografia = await getFotografiaCenso();
+            const censo = {
+                idMascota,
+                idDueno,
+                fotografia,
+                lat: location.latitud,
+                lon: location.longitud,
+                idProyecto: getValue("idProyecto"),
+                color: getValue("color")
+            };
+
+            if (!censo.idProyecto) {
+                showMessage(message, "El proyecto es obligatorio", "error");
+                return;
+            }
+
+            if (!/^#[0-9A-Fa-f]{6}$/.test(censo.color)) {
+                showMessage(message, "El color configurado no es válido", "error");
+                return;
+            }
+
             await censosService.crearCenso(censo);
             form.reset();
-            document.getElementById("idProyecto").value = "PWA_GRUPO_06";
-            document.getElementById("color").value = "#06cf0c";
+            resetCapturedPhoto();
+            restoreProjectConfig();
             showMessage(message, "Censo registrado correctamente", "success");
             await cargarCensos();
         } catch (error) {
@@ -122,24 +109,46 @@ async function cargarCensos() {
 
         if (!censos.length) {
             tbody.innerHTML = "<tr><td colspan=\"5\">No hay censos registrados.</td></tr>";
+            window.renderCensoMarkers?.([]);
             return;
         }
 
-        censos.forEach((censo) => {
+        requestAnimationFrame(() => renderRowsInBatches(tbody, censos));
+        window.renderCensoMarkers?.(censos);
+    } catch (error) {
+        console.error(error);
+        tbody.innerHTML = "<tr><td colspan=\"5\">No se pudieron cargar los censos.</td></tr>";
+    }
+}
+
+function renderRowsInBatches(tbody, censos) {
+    const batchSize = 50;
+    let index = 0;
+
+    function renderBatch() {
+        const fragment = document.createDocumentFragment();
+        censos.slice(index, index + batchSize).forEach((censo) => {
+            const color = getSafeColor(censo.color);
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${escapeHtml(getMascotaLabel(censo))}</td>
                 <td>${escapeHtml(getDuenoLabel(censo))}</td>
                 <td>${escapeHtml(censo.lat ?? censo.latitud ?? "")}</td>
                 <td>${escapeHtml(censo.lon ?? censo.longitud ?? "")}</td>
-                <td>${escapeHtml(censo.color || "")}</td>
+                <td><span class="color-swatch" style="background:${color}"></span>${escapeHtml(color)}</td>
             `;
-            tbody.appendChild(tr);
+            fragment.appendChild(tr);
         });
-    } catch (error) {
-        console.error(error);
-        tbody.innerHTML = "<tr><td colspan=\"5\">No se pudieron cargar los censos.</td></tr>";
+
+        tbody.appendChild(fragment);
+        index += batchSize;
+
+        if (index < censos.length) {
+            requestAnimationFrame(renderBatch);
+        }
     }
+
+    renderBatch();
 }
 
 function getValue(id) {
@@ -164,47 +173,64 @@ function normalizeList(response, key) {
 
 async function getFotografiaCenso() {
     const foto = document.getElementById("foto");
+    const fotografia = foto?.dataset.photo || foto?.src || "";
 
-    if (foto && foto.src && foto.style.display !== "none") {
-        return compressDataUrl(foto.src, 45 * 1024);
+    if (isValidPhotoDataUrl(fotografia)) {
+        return compressDataUrl(fotografia, 120 * 1024);
     }
 
-    return "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8VAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwAA8A/9k";
+    throw new Error("Toma una foto antes de guardar el censo.");
 }
 
-function compressDataUrl(dataUrl, maxBytes) {
-    if (dataUrl.length <= maxBytes) {
+function isValidPhotoDataUrl(value) {
+    return /^data:image\/(png|jpe?g|webp);base64,/i.test(value || "");
+}
+
+async function compressDataUrl(dataUrl, maxBytes) {
+    if (getDataUrlSizeInBytes(dataUrl) <= maxBytes) {
         return dataUrl;
     }
 
+    const image = await loadImage(dataUrl);
     const canvas = document.createElement("canvas");
-    const image = new Image();
+    const context = canvas.getContext("2d");
+    const widths = [320, 240, 180, 140, 100, 80];
+    const qualities = [0.72, 0.6, 0.48, 0.36, 0.28, 0.2];
 
-    return new Promise((resolve) => {
-        image.onload = () => {
-            canvas.width = 160;
-            canvas.height = Math.round((image.height / image.width) * canvas.width) || 120;
-            const context = canvas.getContext("2d");
-            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    for (const width of widths) {
+        canvas.width = width;
+        canvas.height = Math.max(1, Math.round((image.height / image.width) * width));
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
 
-            let quality = 0.7;
-            let compressed = canvas.toDataURL("image/jpeg", quality);
-
-            while (compressed.length > maxBytes && quality > 0.2) {
-                quality -= 0.1;
-                compressed = canvas.toDataURL("image/jpeg", quality);
+        for (const quality of qualities) {
+            const compressed = canvas.toDataURL("image/jpeg", quality);
+            if (getDataUrlSizeInBytes(compressed) <= maxBytes) {
+                return compressed;
             }
+        }
+    }
 
-            resolve(compressed.length <= maxBytes ? compressed : getTinyPhoto());
-        };
-
-        image.onerror = () => resolve(getTinyPhoto());
-        image.src = dataUrl;
-    });
+    return getTinyPhoto();
 }
 
 function getTinyPhoto() {
     return "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8VAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwAA8A/9k";
+}
+
+function loadImage(dataUrl) {
+    return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = () => reject(new Error("No se pudo procesar la fotografía."));
+        image.src = dataUrl;
+    });
+}
+
+function getDataUrlSizeInBytes(dataUrl) {
+    const base64 = String(dataUrl).split(",")[1] || "";
+    const padding = (base64.match(/=+$/) || [""])[0].length;
+    return Math.floor((base64.length * 3) / 4) - padding;
 }
 
 function getMascotaLabel(censo) {
@@ -217,7 +243,25 @@ function getDuenoLabel(censo) {
         return [censo.dueno.nombres, censo.dueno.apellidos].filter(Boolean).join(" ");
     }
 
-    return censo.personaNombre || censo.duenoNombre || censo.idDueno || censo.idPersona || "";
+    return censo.personaNombre || censo.duenoNombre || censo.idDueno || "";
+}
+
+function restoreProjectConfig() {
+    document.getElementById("idProyecto").value = "PROYWA_006";
+    document.getElementById("color").value = "#06CF0C";
+}
+
+function resetCapturedPhoto() {
+    const foto = document.getElementById("foto");
+    if (!foto) return;
+
+    foto.removeAttribute("src");
+    foto.removeAttribute("data-photo");
+    foto.style.display = "none";
+}
+
+function getSafeColor(color) {
+    return /^#[0-9A-Fa-f]{6}$/.test(color || "") ? color.toUpperCase() : "#06CF0C";
 }
 
 function escapeHtml(value) {

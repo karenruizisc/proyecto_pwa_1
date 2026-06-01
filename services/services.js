@@ -155,7 +155,7 @@ class CensoAPI {
     }
 
     /**
-     * Obtiene la lista completa de censos (ideal para renderizar en Leaflet)
+     * Obtiene la lista completa de censos (ideal para renderizar en Google Maps)
      */
     async listarCensos() {
         return await this.#request('/api/v1/censos', { method: 'GET' });

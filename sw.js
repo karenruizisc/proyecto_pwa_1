@@ -1,5 +1,5 @@
 const CACHE_INMUTABLE = "cache-inmutable-v1";
-const CACHE_STATIC = "cache-static-v1";
+const CACHE_STATIC = "cache-static-v2";
 const CACHE_DYNAMIC = "cache-dynamic-v1";
 
 const APP_SHELL = [

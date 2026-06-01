@@ -15,9 +15,7 @@ body{
     padding: 20px;
 }
 
-/* ===================================
-   CONTAINER
-=================================== */
+/* CONTAINER */
 
 .login-container{
     width: 100%;
@@ -31,9 +29,7 @@ body{
     box-shadow: 0 15px 40px rgba(0,0,0,0.12);
 }
 
-/* ===================================
-   LEFT
-=================================== */
+/* LEFT */
 
 .login-left{
     padding: 50px 40px;
@@ -180,9 +176,8 @@ body{
     font-weight: 700;
 }
 
-/* ===================================
-   RIGHT
-=================================== */
+/*
+   RIGHT */
 
 .login-right{
     position: relative;
@@ -228,9 +223,8 @@ body{
     text-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
-/* ===================================
-   RESPONSIVE
-=================================== */
+/*
+   RESPONSIVE */
 
 @media(max-width: 950px){
 
