@@ -23,16 +23,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const censo = {
             idMascota,
             idDueno,
-            idPersona: idDueno,
-            mascotaNombre: mascotaLabel,
-            duenoNombre: duenoLabel,
             fotografia,
             lat: location ? location.latitud : "",
             lon: location ? location.longitud : "",
             idProyecto: getValue("idProyecto"),
             color: getValue("color")
         };
-
+        console.log("Datos del censo a registrar:", censo);
         if (!censo.idMascota || !censo.idDueno) {
             showMessage(message, "Selecciona una mascota y un dueño", "error");
             return;
@@ -54,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            await censosService.crearCenso(censo);
+            await censosService.crearCenso(censo);       
             form.reset();
             document.getElementById("idProyecto").value = "PWA_GRUPO_06";
             document.getElementById("color").value = "#06cf0c";
