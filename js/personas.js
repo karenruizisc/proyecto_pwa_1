@@ -30,17 +30,51 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        try {
-            await personasService.registrarPersonaAlias(persona);
-            form.reset();
-            showMessage(message, "Dueño registrado correctamente", "success");
-            await cargarPersonas();
-        } catch (error) {
-            console.error(error);
-            showMessage(message, getFriendlyError(error), "error");
-        }
+try {
+
+    const response =
+        await personasService.registrarPersonaAlias(persona);
+
+    if (response?.queued) {
+
+        form.reset();
+
+        showMessage(
+            message,
+            "Dueño guardado offline. Se sincronizará cuando vuelva la conexión.",
+            "info"
+        );
+
+        return;
+    }
+
+    form.reset();
+
+    showMessage(
+        message,
+        "Dueño registrado correctamente",
+        "success"
+    );
+
+    await cargarPersonas();
+
+} catch (error) {
+
+    console.error(error);
+
+    showMessage(
+        message,
+        getFriendlyError(error),
+        "error"
+    );
+
+}
     });
 
+    cargarPersonas();
+});
+
+window.addEventListener("offline-sync-finished", () => {
     cargarPersonas();
 });
 
