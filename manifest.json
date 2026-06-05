@@ -21,8 +21,8 @@
   "lang": "es",
   "name": "pwa_006",
   "short_name": "pwa_006",
-  "start_url": "https://proyecto-pwa-1.vercel.app/",
-  "scope": "https://proyecto-pwa-1.vercel.app/",
+  "start_url": "./index.html",
+  "scope": "./",
   "description": "Censo Mascotas",
-  "id": "https://proyecto-pwa-1.vercel.app/"
+  "id": "./"
 }

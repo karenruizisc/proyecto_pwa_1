@@ -50,19 +50,58 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        try {
-            await censosService.crearCenso(censo);       
-            form.reset();
-            document.getElementById("idProyecto").value = "PWA_GRUPO_06";
-            document.getElementById("color").value = "#06cf0c";
-            showMessage(message, "Censo registrado correctamente", "success");
-            await cargarCensos();
-        } catch (error) {
-            console.error(error);
-            showMessage(message, error.message, "error");
-        }
+try {
+
+    const response =
+        await censosService.crearCenso(censo);
+
+    if (response?.queued) {
+
+        form.reset();
+
+        document.getElementById("idProyecto").value = "PWA_GRUPO_06";
+        document.getElementById("color").value = "#06cf0c";
+
+        showMessage(
+            message,
+            "Censo guardado offline. Se sincronizará cuando vuelva la conexión.",
+            "info"
+        );
+
+        return;
+    }
+
+    form.reset();
+
+    document.getElementById("idProyecto").value = "PWA_GRUPO_06";
+    document.getElementById("color").value = "#06cf0c";
+
+    showMessage(
+        message,
+        "Censo registrado correctamente",
+        "success"
+    );
+
+    await cargarCensos();
+
+} catch (error) {
+
+    console.error(error);
+
+    showMessage(
+        message,
+        error.message,
+        "error"
+    );
+
+}
     });
 
+    cargarOpciones();
+    cargarCensos();
+});
+
+window.addEventListener("offline-sync-finished", () => {
     cargarOpciones();
     cargarCensos();
 });

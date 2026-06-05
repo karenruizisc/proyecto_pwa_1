@@ -20,17 +20,51 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        try {
-            await mascotasService.crearMascota(mascota);
-            form.reset();
-            showMessage(message, "Mascota registrada correctamente", "success");
-            await cargarMascotas();
-        } catch (error) {
-            console.error(error);
-            showMessage(message, error.message, "error");
-        }
+try {
+
+    const response =
+        await mascotasService.crearMascota(mascota);
+
+    if (response?.queued) {
+
+        form.reset();
+
+        showMessage(
+            message,
+            "Mascota guardada offline. Se sincronizará cuando vuelva la conexión.",
+            "info"
+        );
+
+        return;
+    }
+
+    form.reset();
+
+    showMessage(
+        message,
+        "Mascota registrada correctamente",
+        "success"
+    );
+
+    await cargarMascotas();
+
+} catch (error) {
+
+    console.error(error);
+
+    showMessage(
+        message,
+        error.message,
+        "error"
+    );
+
+}
     });
 
+    cargarMascotas();
+});
+
+window.addEventListener("offline-sync-finished", () => {
     cargarMascotas();
 });
 
