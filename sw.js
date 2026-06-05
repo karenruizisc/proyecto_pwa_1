@@ -1,6 +1,6 @@
-const CACHE_INMUTABLE = "cache-inmutable-v2";
-const CACHE_STATIC = "cache-static-v2";
-const CACHE_DYNAMIC = "cache-dynamic-v2";
+const CACHE_INMUTABLE = "cache-inmutable-v3";
+const CACHE_STATIC = "cache-static-v3";
+const CACHE_DYNAMIC = "cache-dynamic-v3";
 
 const API_ORIGIN = "https://elprofehugo.online";
 const DB_NAME = "offline-db";
@@ -261,6 +261,7 @@ async function registerSync() {
 
 async function processQueue() {
     const requests = await getPendingRequests();
+    let syncedRequests = 0;
 
     for (const pendingRequest of requests) {
         try {
@@ -272,6 +273,7 @@ async function processQueue() {
 
             if (response.ok) {
                 await deletePendingRequest(pendingRequest.id);
+                syncedRequests += 1;
             }
         } catch (error) {
             console.error("Sync pendiente", error);
@@ -279,7 +281,9 @@ async function processQueue() {
         }
     }
 
-    notifyClientsToSync();
+    if (syncedRequests > 0) {
+        notifyClientsToSync();
+    }
 }
 
 function notifyClientsToSync() {

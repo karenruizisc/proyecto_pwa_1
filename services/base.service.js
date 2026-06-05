@@ -101,8 +101,6 @@ class ApiService {
             );
         }
 
-        requestPendingSync();
-
         return data;
     }
 
